@@ -1,0 +1,11 @@
+.welcome {
+    border-bottom: 1px solid #B2A59B;
+    display: flex;
+    justify-content: space-between;
+}
+
+.welcome p:nth-child(2) {
+    background-color: #CAA6A6;
+    padding: 10px;
+    border-radius: 15px;
+}
