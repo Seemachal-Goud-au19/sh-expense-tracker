@@ -1,12 +1,18 @@
 import { useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import CartContext from '../../store/cart-context';
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
+
+
 import './AuthForm.css';
 
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [type, setType] = useState('password');
+const [icon, setIcon] = useState('eyeOff');
   const navigate = useNavigate();
 
   const cartCtx = useContext(CartContext)
@@ -19,13 +25,23 @@ const AuthForm = () => {
     setIsLogin((prevState) => !prevState);
   };
 
+  const handleViewPassword = () => {
+    if (type==='password'){
+       setIcon('eye');
+       setType('text')
+    } else {
+       setIcon('eyeOff')
+       setType('password')
+    }
+ }
+
   const submitHandler = (e) => {
     e.preventDefault();
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
-    const enteredConfirmPassword = confirmPasswordInputRef.current.value;
+    const enteredConfirmPassword = confirmPasswordInputRef?.current?.value;
 
-    if (enteredPassword !== enteredConfirmPassword) {
+    if (!isLogin && (enteredPassword !== enteredConfirmPassword)) {
       return alert("confirm password mismatch")
     }
     setIsLoading(true)
@@ -46,7 +62,7 @@ const AuthForm = () => {
         if (res.ok) {
           return res.json().then((data) => {
             cartCtx.login(data.idToken, data.email)
-            navigate('/store')
+            navigate('/')
 
           })
         }
@@ -88,7 +104,7 @@ const AuthForm = () => {
       })
     }
 
-
+   
 
   }
   return (
@@ -102,11 +118,12 @@ const AuthForm = () => {
         <div className='control'>
           <label htmlFor='password'>Password</label>
           <input
-            type='password'
+            type={type}
             id='password'
             required
-            ref={confirmPasswordInputRef}
+            ref={passwordInputRef}
           />
+          <span onClick={handleViewPassword }>{icon==='eye'?<IoMdEye />:<IoMdEyeOff />}</span>
         </div>
         {!isLogin && <div className='control'>
           <label htmlFor='confirm-password'>Confirm Password</label>
@@ -114,7 +131,7 @@ const AuthForm = () => {
             type='password'
             id='confirm-password'
             required
-            ref={passwordInputRef}
+            ref={confirmPasswordInputRef}
           />
         </div>
         }
@@ -125,6 +142,7 @@ const AuthForm = () => {
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>
+          {isLogin && <h6><Link>Forgot Password </Link></h6>}
         </div>}
 
         <div className='actions'>
@@ -133,7 +151,7 @@ const AuthForm = () => {
             className='toggle'
             onClick={switchAuthModeHandler}
           >
-            {isLogin ? 'Create new account' : 'Have an account? Login'}
+            {isLogin ? "Don't have an account? Sign Up" : 'Have an account? Login'}
           </button>
         </div>
       </form>
