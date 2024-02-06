@@ -12,7 +12,7 @@ const Profile = () => {
         profile_name: '',
         profile_photo: ''
     })
-
+    const [verified, setVerified] = useState(false)
     const navigate = useNavigate();
 
     //
@@ -83,14 +83,41 @@ const Profile = () => {
             console.log(err)
         })
     }
+
+
+    const verifyHandler = () => {
+        fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBI0CjaNxfs8gZIR5xd6R8wBKn14aZo2qs', {
+            method: 'POST',
+            body: JSON.stringify({
+                requestType: 'VERIFY_EMAIL',
+                idToken: localStorage.getItem('token'),
+
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {
+                return alert("not verified")
+            }
+            response.json().then((data) => {
+                setVerified(true)
+            })
+
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
     return (
         <section className='profile-section'>
-            <div>
+            {!verified && <Button variant="outline-danger" onClick={verifyHandler}>Verify</Button>}
+            {verified && <div>
                 <h1>Contact Details</h1>
                 <Button variant="outline-danger" onClick={() => navigate('/')}>Cancel</Button>
             </div>
+            }
 
-            <form onSubmit={profileSubmithandler}>
+            {verified && <form onSubmit={profileSubmithandler}>
                 <div className='form-field-container'>
                     <div className=''>
                         <label htmlFor='profile-name'><FaGithub />Full Name</label>
@@ -112,6 +139,7 @@ const Profile = () => {
                     <Button type='submit' variant="danger">Update</Button>
                 </div>
             </form>
+            }
         </section>
     )
 }
