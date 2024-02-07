@@ -142,7 +142,7 @@ const [icon, setIcon] = useState('eyeOff');
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>
-          {isLogin && <h6><Link>Forgot Password </Link></h6>}
+          {isLogin && <h6><Link to='/forget-pass'>Forgot Password </Link></h6>}
         </div>}
 
         <div className='actions'>
