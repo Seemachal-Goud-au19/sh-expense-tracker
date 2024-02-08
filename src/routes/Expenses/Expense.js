@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Expense = () => {
     const [expense, setExpense] = useState({
@@ -17,18 +17,61 @@ const Expense = () => {
         })
     }
 
-    const expenseHandler = (e) => {
+    const submiExpenseHandler = async (e) => {
         e.preventDefault();
-        setExpenseList([...expenseList, expense])
+        try {
+            const response = await fetch('https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses.json', {
+                method: 'POST',
+                body: JSON.stringify(expense),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const data = await response.json()
+            console.log("post data expense", data)
+        } catch (err) {
+            console.log(err)
+        }
         setExpense({
             amount: 0,
             description: '',
             category: ''
         })
+
     }
 
-    console.log(expense)
-    console.log(expenseList)
+
+    const fetchExpenses = async () => {
+        try {
+            const response = await fetch('https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses.json');
+
+            if (!response.ok) {
+                throw new Error('Something went wrong')
+            }
+            const data = await response.json();
+
+            const fetchedExpenseList = [];
+            for (const expenseID in data) {
+
+                fetchedExpenseList.push({
+                    id: expenseID,
+                    amount: data[expenseID].amount,
+                    description: data[expenseID].description,
+                    category: data[expenseID].category
+                })
+            }
+            setExpenseList(fetchedExpenseList);
+
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    useEffect(() => {
+        fetchExpenses()
+    }, [expense])
+
     return (
         <><h6>Expense Lists</h6>
             <div className='expense-list'>
@@ -38,7 +81,7 @@ const Expense = () => {
             </div>
             <section className='auth'>
 
-                <form onSubmit={expenseHandler}>
+                <form onSubmit={submiExpenseHandler}>
                     <div className='control'>
                         <label htmlFor='amount'>Amount</label>
                         <input type='number' id='amount' name='amount' value={expense.amount} required onChange={expenseInput} />
