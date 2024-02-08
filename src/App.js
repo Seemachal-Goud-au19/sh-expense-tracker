@@ -5,6 +5,7 @@ import Home from './routes/Home/Home';
 import Profile from './routes/Profile/Profile';
 import NavBar from './components/Navbar';
 import Forgetpass from './routes/Auth/Forgetpass';
+import Expense from './routes/Expenses/Expense';
 
 function App() {
 
@@ -19,13 +20,16 @@ function App() {
           path="/login"
           element={<AuthForm />} />
 
-          <Route
+        <Route
           path="/forget-pass"
           element={<Forgetpass />} />
 
         <Route
           path="/profile"
           element={<Profile />} />
+        <Route
+          path="/expense"
+          element={<Expense />} />
       </Routes>
     </>
   );
