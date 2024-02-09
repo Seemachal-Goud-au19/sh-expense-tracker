@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 
 const Expense = () => {
     const [expense, setExpense] = useState({
@@ -7,6 +8,7 @@ const Expense = () => {
         category: ''
     })
     const [expenseList, setExpenseList] = useState([]);
+    const [updateDeleteState, setUpdateDeleteState] = useState(true)
 
     const expenseInput = (e) => {
         setExpense((prevValue) => {
@@ -28,7 +30,7 @@ const Expense = () => {
                 }
             })
             const data = await response.json()
-            console.log("post data expense", data)
+
         } catch (err) {
             console.log(err)
         }
@@ -68,15 +70,65 @@ const Expense = () => {
         }
     }
 
+    const editExpenseHandler = async (id) => {
+
+
+        const FilteredExpense = expenseList.find((expense) => expense.id === id)
+
+        const updatedAmount = prompt("updated amount", FilteredExpense.amount)
+        const updatedDescription = prompt("updated description", FilteredExpense.description)
+        const updatedCategory = prompt("updated category", FilteredExpense.category)
+
+        try {
+            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses/${id}.json`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    amount: updatedAmount,
+                    description: updatedDescription,
+                    category: updatedCategory
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const data = await response.json()
+
+        } catch (err) {
+            console.log(err)
+        }
+
+        setUpdateDeleteState(!updateDeleteState)
+    }
+
+    const deleteExpenseHandler = async (id) => {
+
+        try {
+            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses/${id}.json`, {
+                method: 'DELETE',
+
+            })
+            const data = await response.json()
+
+        } catch (err) {
+            console.log(err)
+        }
+        setUpdateDeleteState(!updateDeleteState)
+    }
+
     useEffect(() => {
         fetchExpenses()
-    }, [expense])
+    }, [expense, updateDeleteState])
 
     return (
         <><h6>Expense Lists</h6>
             <div className='expense-list'>
                 <ul>
-                    {expenseList.length > 0 && expenseList.map((expense) => (<li>Category--{expense.category}-Description--{expense.description}-Amount--{expense.amount}</li>))}
+                    {expenseList.length > 0 && expenseList.map((expense) => (
+                        <li>
+                            <h6>Category--{expense.category}-Description--{expense.description}-Amount--{expense.amount} </h6>
+                            <button onClick={() => editExpenseHandler(expense.id)}>Edit</button>
+                            <button onClick={() => deleteExpenseHandler(expense.id)}>Delete</button>
+                        </li>))}
                 </ul>
             </div>
             <section className='auth'>
