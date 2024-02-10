@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, decrementBy, incrementBy, selectCount } from '../../redux-store/counterSlice'
+import { increment, decrement, decrementBy, incrementBy} from '../../redux-store/counterSlice'
 
 import classes from './Counter.module.css';
 
 const Counter = () => {
-  const count = useSelector(selectCount);
+  const count = useSelector((state) => state.counter.value);
   const dispatch = useDispatch();
 
   const toggleCounterHandler = () => { };
