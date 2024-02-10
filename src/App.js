@@ -6,12 +6,13 @@ import Profile from './routes/Profile/Profile';
 import NavBar from './components/Navbar';
 import Forgetpass from './routes/Auth/Forgetpass';
 import Expense from './routes/Expenses/Expense';
+import Counter from './components/reduxLearnComponent/Counter';
 
 function App() {
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar />
       <Routes>
         <Route
           path="/"
@@ -30,7 +31,8 @@ function App() {
         <Route
           path="/expense"
           element={<Expense />} />
-      </Routes>
+      </Routes> */}
+<Counter/>
     </>
   );
 }
