@@ -3,7 +3,8 @@ import { useNavigate,Link } from 'react-router-dom';
 import CartContext from '../../store/cart-context';
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-
+import { login,logout } from '../../redux-store/authenticationSlice';
+import { useDispatch } from 'react-redux';
 
 import './AuthForm.css';
 
@@ -14,6 +15,8 @@ const AuthForm = () => {
   const [type, setType] = useState('password');
 const [icon, setIcon] = useState('eyeOff');
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const cartCtx = useContext(CartContext)
 
@@ -62,6 +65,7 @@ const [icon, setIcon] = useState('eyeOff');
         if (res.ok) {
           return res.json().then((data) => {
             cartCtx.login(data.idToken, data.email)
+            dispatch(login({token:data.idToken, email:data.email}))
             navigate('/')
 
           })

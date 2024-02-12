@@ -17,7 +17,7 @@ function App() {
   const auth = useSelector((state) => state.auth.isAuthanticated)
   return (
     <>
-      {/* <NavBar />
+      <NavBar />
       <Routes>
         <Route
           path="/"
@@ -36,11 +36,11 @@ function App() {
         <Route
           path="/expense"
           element={<Expense />} />
-      </Routes> */}
-      <Header />
+      </Routes>
+      {/* <Header />
       {!auth && <Auth />}
       {auth && <UserProfile />}
-      <Counter />
+      <Counter /> */}
     </>
   );
 }

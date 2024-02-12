@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { addExpense } from '../../redux-store/expenseSlice';
 
 const Expense = () => {
+    const dispatch = useDispatch();
+    const expenseList = useSelector((state) => state.expenseList.expenseListData)
+
     const [expense, setExpense] = useState({
         amount: 0,
         description: '',
         category: ''
     })
-    const [expenseList, setExpenseList] = useState([]);
+
     const [updateDeleteState, setUpdateDeleteState] = useState(true)
+
+    const TotalExpenseAmount = expenseList.reduce((initialAmount, expenseItem) => initialAmount + expenseItem.amount, 0,)
 
     const expenseInput = (e) => {
         setExpense((prevValue) => {
@@ -57,14 +63,13 @@ const Expense = () => {
 
                 fetchedExpenseList.push({
                     id: expenseID,
-                    amount: data[expenseID].amount,
+                    amount: +data[expenseID].amount,
                     description: data[expenseID].description,
                     category: data[expenseID].category
                 })
             }
-            setExpenseList(fetchedExpenseList);
 
-
+            dispatch(addExpense(fetchedExpenseList))
         } catch (error) {
             console.log(error.message)
         }
@@ -119,6 +124,10 @@ const Expense = () => {
         fetchExpenses()
     }, [expense, updateDeleteState])
 
+   
+   
+
+  
     return (
         <><h6>Expense Lists</h6>
             <div className='expense-list'>
@@ -131,6 +140,7 @@ const Expense = () => {
                         </li>))}
                 </ul>
             </div>
+            {TotalExpenseAmount > 10000 && <div><button>Premium</button></div>}
             <section className='auth'>
 
                 <form onSubmit={submiExpenseHandler}>
