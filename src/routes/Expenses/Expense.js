@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addExpense } from '../../redux-store/expenseSlice';
+import { toggleTheme } from '../../redux-store/themeSlice';
+import './Expense.css'
 
 const Expense = () => {
     const dispatch = useDispatch();
     const expenseList = useSelector((state) => state.expenseList.expenseListData)
+    const darkMode = useSelector((state)=> state.theme.darkMode)
+
 
     const [expense, setExpense] = useState({
         amount: 0,
@@ -15,6 +19,29 @@ const Expense = () => {
     const [updateDeleteState, setUpdateDeleteState] = useState(true)
 
     const TotalExpenseAmount = expenseList.reduce((initialAmount, expenseItem) => initialAmount + expenseItem.amount, 0,)
+
+    const addPremiumHandler =()=>{
+        if(TotalExpenseAmount > 10000){
+            dispatch(toggleTheme())
+        }
+    }
+
+    const downloadCSV = () => {
+        const csvContent = 'data:text/csv;charset=utf-8,';
+        const rows = expenseList.map(expense => `${expense.amount},${expense.description},${expense.category}`);
+        const csvData = rows.join('\n');
+        const encodedUri = encodeURI(csvContent + csvData);
+      
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'expenses.csv');
+        document.body.appendChild(link); // Required for Firefox
+        link.click();
+      };
+      
+     
+      
+    
 
     const expenseInput = (e) => {
         setExpense((prevValue) => {
@@ -129,7 +156,15 @@ const Expense = () => {
 
   
     return (
-        <><h6>Expense Lists</h6>
+        <>
+         <div className={darkMode ? 'dark-theme' : 'light-theme'}>
+      {/* Toggle button for theme */}
+      <button onClick={() => dispatch(toggleTheme())}>Toggle Theme</button>
+
+      {/* Download CSV button */}
+      <button onClick={downloadCSV}>Download Expenses as CSV</button>
+      
+        <h6>Expense Lists</h6>
             <div className='expense-list'>
                 <ul>
                     {expenseList.length > 0 && expenseList.map((expense) => (
@@ -140,7 +175,7 @@ const Expense = () => {
                         </li>))}
                 </ul>
             </div>
-            {TotalExpenseAmount > 10000 && <div><button>Premium</button></div>}
+            {TotalExpenseAmount > 10000 && <div><button onClick={addPremiumHandler}>Premium</button></div>}
             <section className='auth'>
 
                 <form onSubmit={submiExpenseHandler}>
@@ -175,6 +210,7 @@ const Expense = () => {
                 </form>
 
             </section>
+            </div>
         </>
 
     )
