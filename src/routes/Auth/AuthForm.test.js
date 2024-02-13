@@ -3,7 +3,12 @@ import AuthForm from './AuthForm';
 
 describe('Auth Component', () => {
   test('renders Confirm Password', () => {
+    // Arrange
     render(<AuthForm />);
+    // Act 
+    //nothing to act
+
+    //Assert
     const confirm = screen.getByText('Confirm Password');
     expect(confirm).toBeInTheDocument();
   });
