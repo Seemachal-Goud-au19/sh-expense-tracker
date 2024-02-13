@@ -57,5 +57,61 @@ describe('Expense Component', () => {
     expect(currentState.expenseList.expenseListData).toHaveLength(1);
   });
 
-  // Add more test cases here...
+  test('renders expense list fetched from API', async () => {
+    const mockExpenseList = [
+      { id: 1, amount: 100, description: 'Groceries', category: 'Food' },
+      { id: 2, amount: 50, description: 'Movie ticket', category: 'Entertainment' },
+    ];
+
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockExpenseList,
+    });
+
+    render(<Expense />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Groceries')).toBeInTheDocument();
+      expect(screen.getByText('Movie ticket')).toBeInTheDocument();
+    });
+
+    expect(fetch).toHaveBeenCalledWith('https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses.json');
+  });
+
+  test('adds new expense via API', async () => {
+    const mockNewExpense = {
+      id: 3,
+      amount: 75,
+      description: 'Dinner',
+      category: 'Food',
+    };
+
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockNewExpense,
+    });
+
+    render(<Expense />);
+
+    const amountInput = screen.getByLabelText(/amount/i);
+    const descriptionInput = screen.getByLabelText(/description/i);
+    const categoryInput = screen.getByLabelText(/choose a category/i);
+    const submitButton = screen.getByText(/add expense/i);
+
+    userEvent.type(amountInput, '75');
+    userEvent.type(descriptionInput, 'Dinner');
+    userEvent.selectOptions(categoryInput, 'Food');
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith('https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses.json', {
+        method: 'POST',
+        body: JSON.stringify(mockNewExpense),
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+  });
 });
+
+
+
