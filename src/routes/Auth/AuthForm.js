@@ -1,9 +1,9 @@
 import { useState, useRef, useContext } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import CartContext from '../../store/cart-context';
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-import { login,logout } from '../../redux-store/authenticationSlice';
+import { login, logout } from '../../redux-store/authenticationSlice';
 import { useDispatch } from 'react-redux';
 
 import './AuthForm.css';
@@ -13,7 +13,8 @@ const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState('password');
-const [icon, setIcon] = useState('eyeOff');
+  const [icon, setIcon] = useState('eyeOff');
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -29,14 +30,14 @@ const [icon, setIcon] = useState('eyeOff');
   };
 
   const handleViewPassword = () => {
-    if (type==='password'){
-       setIcon('eye');
-       setType('text')
+    if (type === 'password') {
+      setIcon('eye');
+      setType('text')
     } else {
-       setIcon('eyeOff')
-       setType('password')
+      setIcon('eyeOff')
+      setType('password')
     }
- }
+  }
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -65,7 +66,7 @@ const [icon, setIcon] = useState('eyeOff');
         if (res.ok) {
           return res.json().then((data) => {
             cartCtx.login(data.idToken, data.email)
-            dispatch(login({token:data.idToken, email:data.email}))
+            dispatch(login({ token: data.idToken, email: data.email }))
             navigate('/')
 
           })
@@ -94,6 +95,8 @@ const [icon, setIcon] = useState('eyeOff');
       }).then((res) => {
         setIsLoading(false)
         if (res.ok) {
+          setIsLogin(true);
+
           //'''
         }
         else {
@@ -108,7 +111,7 @@ const [icon, setIcon] = useState('eyeOff');
       })
     }
 
-   
+
 
   }
   return (
@@ -127,7 +130,7 @@ const [icon, setIcon] = useState('eyeOff');
             required
             ref={passwordInputRef}
           />
-          <span onClick={handleViewPassword }>{icon==='eye'?<IoMdEye />:<IoMdEyeOff />}</span>
+          <span onClick={handleViewPassword}>{icon === 'eye' ? <IoMdEye /> : <IoMdEyeOff />}</span>
         </div>
         {!isLogin && <div className='control'>
           <label htmlFor='confirm-password'>Confirm Password</label>

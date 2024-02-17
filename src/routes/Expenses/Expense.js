@@ -5,12 +5,20 @@ import { toggleTheme } from '../../redux-store/themeSlice';
 import './Expense.css'
 
 const Expense = () => {
+    const isLoggedIn = useSelector((state) => state.authentication.isLoggedIn)
     const dispatch = useDispatch();
     const expenseList = useSelector((state) => state.expenseList.expenseListData)
-    const darkMode = useSelector((state)=> state.theme.darkMode)
-
+    const darkMode = useSelector((state) => state.theme.darkMode)
+    const [editId, setEditId] = useState(null)
+    const [editForm, setEditForm] = useState(false);
 
     const [expense, setExpense] = useState({
+        amount: 0,
+        description: '',
+        category: ''
+    })
+
+    const [editExpense, setEditExpense] = useState({
         amount: 0,
         description: '',
         category: ''
@@ -20,8 +28,12 @@ const Expense = () => {
 
     const TotalExpenseAmount = expenseList.reduce((initialAmount, expenseItem) => initialAmount + expenseItem.amount, 0,)
 
-    const addPremiumHandler =()=>{
-        if(TotalExpenseAmount > 10000){
+
+    // Remove @ and . from email using regular expressions
+    const modifiedEmail = localStorage.getItem('email').replace(/[@.]/g, '');
+
+    const addPremiumHandler = () => {
+        if (TotalExpenseAmount > 10000) {
             dispatch(toggleTheme())
         }
     }
@@ -31,17 +43,17 @@ const Expense = () => {
         const rows = expenseList.map(expense => `${expense.amount},${expense.description},${expense.category}`);
         const csvData = rows.join('\n');
         const encodedUri = encodeURI(csvContent + csvData);
-      
+
         const link = document.createElement('a');
         link.setAttribute('href', encodedUri);
         link.setAttribute('download', 'expenses.csv');
         document.body.appendChild(link); // Required for Firefox
         link.click();
-      };
-      
-     
-      
-    
+    };
+
+
+
+
 
     const expenseInput = (e) => {
         setExpense((prevValue) => {
@@ -52,10 +64,19 @@ const Expense = () => {
         })
     }
 
+    const editExpenseInput = (e) => {
+        setEditExpense((prevValue) => {
+            return {
+                ...prevValue,
+                [e.target.name]: e.target.value
+            }
+        })
+    }
+
     const submiExpenseHandler = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses.json', {
+            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses.json`, {
                 method: 'POST',
                 body: JSON.stringify(expense),
                 headers: {
@@ -77,8 +98,9 @@ const Expense = () => {
 
 
     const fetchExpenses = async () => {
+        console.log("pooOOOOOOOoooOO",modifiedEmail)
         try {
-            const response = await fetch('https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses.json');
+            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses.json`);
 
             if (!response.ok) {
                 throw new Error('Something went wrong')
@@ -103,22 +125,30 @@ const Expense = () => {
     }
 
     const editExpenseHandler = async (id) => {
-
-
+        setEditForm(true)
+        setEditId(id)
         const FilteredExpense = expenseList.find((expense) => expense.id === id)
+        const { amount, description, category } = FilteredExpense
+        setEditExpense({
+            amount,
+            description,
+            category
+        })
 
-        const updatedAmount = prompt("updated amount", FilteredExpense.amount)
-        const updatedDescription = prompt("updated description", FilteredExpense.description)
-        const updatedCategory = prompt("updated category", FilteredExpense.category)
+
+    }
+
+
+    const submitEditExpenseHandler = async (e) => {
+        e.preventDefault()
+
+        console.log("Edit expense", expense)
+        console.log("editId", editId, typeof (editId))
 
         try {
-            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses/${id}.json`, {
+            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses/${editId}.json`, {
                 method: 'PUT',
-                body: JSON.stringify({
-                    amount: updatedAmount,
-                    description: updatedDescription,
-                    category: updatedCategory
-                }),
+                body: JSON.stringify({ ...editExpense }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -129,13 +159,19 @@ const Expense = () => {
             console.log(err)
         }
 
+        setEditExpense(false)
+        setEditExpense({
+            amount: 0,
+            description: '',
+            category: ''
+        })
         setUpdateDeleteState(!updateDeleteState)
     }
 
     const deleteExpenseHandler = async (id) => {
 
         try {
-            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/expenses/${id}.json`, {
+            const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses/${id}.json`, {
                 method: 'DELETE',
 
             })
@@ -144,6 +180,7 @@ const Expense = () => {
         } catch (err) {
             console.log(err)
         }
+        // setEditExpense(false)
         setUpdateDeleteState(!updateDeleteState)
     }
 
@@ -151,65 +188,112 @@ const Expense = () => {
         fetchExpenses()
     }, [expense, updateDeleteState])
 
-   
-   
 
-  
+    console.log(isLoggedIn)
+
+
     return (
         <>
-         <div className={darkMode ? 'dark-theme' : 'light-theme'}>
-      {/* Toggle button for theme */}
-      <button onClick={() => dispatch(toggleTheme())}>Toggle Theme</button>
+            <div className={darkMode ? 'dark-theme' : 'slight-theme'}>
 
-      {/* Download CSV button */}
-      <button onClick={downloadCSV}>Download Expenses as CSV</button>
-      
-        <h6>Expense Lists</h6>
-            <div className='expense-list'>
-                <ul>
-                    {expenseList.length > 0 && expenseList.map((expense) => (
-                        <li>
-                            <h6>Category--{expense.category}-Description--{expense.description}-Amount--{expense.amount} </h6>
-                            <button onClick={() => editExpenseHandler(expense.id)}>Edit</button>
-                            <button onClick={() => deleteExpenseHandler(expense.id)}>Delete</button>
-                        </li>))}
-                </ul>
-            </div>
-            {TotalExpenseAmount > 10000 && <div><button onClick={addPremiumHandler}>Premium</button></div>}
-            <section className='auth'>
 
-                <form onSubmit={submiExpenseHandler}>
-                    <div className='control'>
-                        <label htmlFor='amount'>Amount</label>
-                        <input type='number' id='amount' name='amount' value={expense.amount} required onChange={expenseInput} />
-                    </div>
-                    <div className='control'>
-                        <label htmlFor='description'>Description</label>
-                        <input type='text' id='description' name='description' value={expense.description} required onChange={expenseInput} />
-                    </div>
-                    <div className='control'>
-                        <label htmlFor="category-select">Choose a Category:</label>
 
-                        <select name="category" id="category-select" value={expense.category} onChange={expenseInput} >
-                            <option value="">--Please choose an option--</option>
-                            <option value="food">Food</option>
-                            <option value="movie">Movie</option>
-                            <option value="holiday">Holiday</option>
+                <section className='expense'>
+                    <div className='outer-btn'>
+                        {/* Toggle button for theme */}
+                        <button onClick={() => dispatch(toggleTheme())}>Toggle Theme</button>
 
-                        </select>
-                    </div>
-                    <div className=''>
-                        <button
-                            type='submit'
-                            className='toggle'
-                        >
-                            Add Expense
-                        </button>
+                        {/* Download CSV button */}
+                        <button onClick={downloadCSV}>Download Expenses as CSV</button>
 
                     </div>
-                </form>
+                    <div class="form content">
+                        <h3 class="secondTitle"> {editForm ? 'Edit Item' : 'Add a new item:'} </h3>
+                        {/* Edit Form*/}
+                        {editForm && <form id="expForm" onSubmit={submitEditExpenseHandler}>
+                            <div class="control">
+                                <label htmlFor="category-select">Choose a Category:</label>
 
-            </section>
+                                <select name="category" id="category-select" value={editExpense.category} onChange={editExpenseInput} >
+                                    <option value="">--Please choose an option--</option>
+                                    <option value="food">Food</option>
+                                    <option value="movie">Movie</option>
+                                    <option value="holiday">Holiday</option>
+
+                                </select>
+                            </div>
+
+
+
+                            <div class="control">
+                                <label for="amount">Amount:</label>
+                                <input type="number" id="amount" name='amount' value={editExpense.amount} required onChange={editExpenseInput} />
+                            </div>
+
+                            <div className='control'>
+                                <label htmlFor='description'>Description</label>
+                                <input type='text' id='description' name='description' value={editExpense.description} required onChange={editExpenseInput} />
+                            </div>
+                            <button type="submit" class="buttonSave">Edit expense</button>
+                            <button class="cancel-edit" onClick={() => setEditForm(false)}>Cancel</button>
+                        </form>}
+
+                        {/* Add expense Form */}
+                        {!editForm && <form id="expForm" onSubmit={submiExpenseHandler}>
+                            <div class="control">
+                                <label htmlFor="category-select">Choose a Category:</label>
+
+                                <select name="category" id="category-select" value={expense.category} onChange={expenseInput} >
+                                    <option value="">--Please choose an option--</option>
+                                    <option value="food">Food</option>
+                                    <option value="movie">Movie</option>
+                                    <option value="holiday">Holiday</option>
+
+                                </select>
+                            </div>
+
+
+
+                            <div class="control">
+                                <label for="amount">Amount:</label>
+                                <input type="number" id="amount" name='amount' value={expense.amount} required onChange={expenseInput} />
+                            </div>
+
+                            <div className='control'>
+                                <label htmlFor='description'>Description</label>
+                                <input type='text' id='description' name='description' value={expense.description} required onChange={expenseInput} />
+                            </div>
+                            <button type="submit" class="buttonSave">Add a new expense</button>
+                        </form>}
+                    </div>
+                </section>
+
+
+              <section class="content">
+                    <h3 class="secondTitle">Expense Lists</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th colspan="2">Options</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTable">
+                            {expenseList.length > 0 && expenseList.map((expense) => (
+                                <tr>
+                                    <td>{expense.category}</td>
+                                    <td>{expense.description}</td>
+                                    <td>{expense.amount} </td>
+                                    <td className='expense-optin-btn' style={{ cursor: "pointer", color: 'blue' }} onClick={() => editExpenseHandler(expense.id)}>Edit</td>
+                                    <td className='expense-optin-btn' style={{ cursor: "pointer", color: 'red' }} onClick={() => deleteExpenseHandler(expense.id)}>Delete</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </section> 
             </div>
         </>
 

@@ -7,19 +7,27 @@ export const authenticationSlice = createSlice({
     },
     reducers: {
         login: (state, action) => {
-          
+
             state.isLoggedIn = !!action.payload.token
-            localStorage.setItem('token', action.payload.token)
-            localStorage.setItem('email', action.payload.email)
+            localStorage.setItem('token', action?.payload?.token)
+            localStorage.setItem('email', action?.payload?.email)
         },
+        islogin: (state) => {
+            console.log("token", localStorage.getItem('token'))
+            state.isLoggedIn = !!localStorage.getItem('token') || false
+            console.log(state.isLoggedIn)
+        },
+
         logout: (state) => {
-            state.isAuthanticated = false
+            state.isLoggedIn = false
+            localStorage.removeItem('token')
+            localStorage.removeItem('email')
         },
 
     },
 });
 
-export const { login, logout } = authenticationSlice.actions;
+export const { login, logout, islogin } = authenticationSlice.actions;
 
 
 

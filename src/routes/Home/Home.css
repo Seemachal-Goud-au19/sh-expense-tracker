@@ -2,10 +2,26 @@
     border-bottom: 1px solid #B2A59B;
     display: flex;
     justify-content: space-between;
+    padding: 1rem 1rem 0 1rem;
+    font-style: italic;
 }
 
 .welcome p:nth-child(2) {
     background-color: #CAA6A6;
     padding: 10px;
     border-radius: 15px;
+    
+}
+
+.welcome > p,a {
+    font-size: 1.1rem;
+}
+
+.verify-btn {
+    position: absolute;
+    top: 50%;
+    right: 43%;
+    transform: translate(-50%, -50%);
+    width: 10%;
+    height: 73px;
 }

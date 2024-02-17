@@ -1,12 +1,73 @@
-.profile-section{
-
+.profile .profile-message {
+    border-bottom: 1px solid #B2A59B;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1rem 0 1rem;
+    font-style: italic;
 }
-.profile-section > div{
-display: flex;
-justify-content: space-between;
+
+.profile .profile-message p:nth-child(2) {
+    background-color: #CAA6A6;
+    padding: 10px;
+    border-radius: 15px;
+    flex-basis: 27%;
 }
 
-.profile-section .form-field-container{
+.profile .profile-message p {
+    font-size: 1.1rem;
+}
+
+.profile .profile-message span {
+    font-weight: 900 !important;
+    font-size: 1.1rem;
+}
+
+
+
+
+.profile-section {
+    padding-top: 1rem;
+    padding-right: 1rem;
+}
+
+.profile .form-container {
+    margin-left: 30%;
+}
+
+.form-container>div {
+    display: flex !important;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.form-container>div h3 {
+    font-size: 1.5rem;
+}
+
+.form-field-container {
+    margin-bottom: 2rem;
+}
+
+.form-field-container span svg {
+    font-size: 30px;
+}
+
+.form-field-container label {
+    font-weight: 600;
+}
+
+.profile-section .form-field-container {
     display: flex;
     
+
+}
+
+.profile-section .form-field-container>div {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.profile-section .form-field-container input {
+    width: 70%
 }

@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from './counterSlice';
-import authReducer from './authenticationSlice';
+import authReducer from './authSlice';
 import authenticationReducer from './authenticationSlice';
 import expenseReducer from './expenseSlice';
 import themeReducer from "./themeSlice"

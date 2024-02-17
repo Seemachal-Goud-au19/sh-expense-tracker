@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, Redirect } from 'react-router-dom';
 import AuthForm from './routes/Auth/AuthForm';
 import Home from './routes/Home/Home';
@@ -9,35 +9,67 @@ import Expense from './routes/Expenses/Expense';
 import Layout from './components/shoppingComponents/Layout/Layout';
 import Cart from './components/shoppingComponents/Cart/Cart';
 import Products from './components/shoppingComponents/Shop/Products';
+import Expense2 from './routes/Expenses/Expense2';
+import { login } from './redux-store/authenticationSlice';
 
 
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 
 function App() {
-  const auth = useSelector((state) => state.auth.isAuthanticated)
-  return (
+  const dispatch = useDispatch();
+  const [verified, setVerified] = useState(false)
+  const [loading, setLoading] = useState(true);
+
+const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
+
+console.log(isLoggedIn)
+
+useEffect(() => {
+ 
+  const token = localStorage.getItem('token');
+  const email = localStorage.getItem('email');
+  if (token && email) {
+   
+    dispatch(login({ token, email }));
+    setVerified(true);
+  }
+  setLoading(false);
+}, [dispatch]);
+ 
+if (loading) {
+  return <div>Loading...</div>; 
+} 
+
+return (
     <>
-      <NavBar />
+   {verified && <NavBar />}
+
       <Routes>
         <Route
+        exact
           path="/"
-          element={<Home />} />
+          element={isLoggedIn ? <Home verified={verified} setVerified={setVerified}/> : <Navigate to='/login' />} />
         <Route
           path="/login"
-          element={<AuthForm />} />
-
+          element={ isLoggedIn ? <Navigate to="/" /> : <AuthForm />} />
+ 
         <Route
           path="/forget-pass"
-          element={<Forgetpass />} />
+          element={isLoggedIn ? <Forgetpass /> : <Navigate to='/login' />} />
 
         <Route
           path="/profile"
-          element={<Profile />} />
+          element={isLoggedIn ? <Profile /> : <Navigate to='/login' />} />
         <Route
           path="/expense"
-          element={<Expense />} />
-      </Routes>
-     
+          element={isLoggedIn ? <Expense /> : <Navigate to='/login' />} />
+       </Routes>
+
+       {/* <Layout>
+      <Cart />
+      <Products />
+    </Layout> */}
+
     </>
   );
 }
