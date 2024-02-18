@@ -46,7 +46,7 @@ function App() {
 
   return (
     <>
-      {verified && <NavBar />}
+      {/* {verified && <NavBar />}
 
       <Routes>
         <Route
@@ -74,12 +74,12 @@ function App() {
           path="*"
           element={<Navigate to='/' />}
         />
-      </Routes>
+      </Routes> */}
 
-    {/* <Layout>
+    <Layout>
       <Cart />
       <Products />
-    </Layout> */}
+    </Layout>
 
     </>
   );
