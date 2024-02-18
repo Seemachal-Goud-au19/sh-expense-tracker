@@ -11,13 +11,14 @@ import './Navbar.css'
 
 const NavBar = () => {
     const cartCtx = useContext(CartContext)
-    const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
+    // const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
+    const isLoggedIn = cartCtx.isLoggedIn
 
     const { pathname } = useLocation();
  return (
         <Navbar expand="lg" className="navbar">
            
-                {isLoggedIn && <Button className='logout-btn'  variant="outline-danger" onClick={()=>{logout()}}>Logout</Button>}
+                {isLoggedIn && <Button className='logout-btn'  variant="outline-danger" onClick={()=>{cartCtx.logout()}}>Logout</Button>}
 
         </Navbar>
     );

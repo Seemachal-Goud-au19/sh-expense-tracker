@@ -11,48 +11,54 @@ import Cart from './components/shoppingComponents/Cart/Cart';
 import Products from './components/shoppingComponents/Shop/Products';
 import Expense2 from './routes/Expenses/Expense2';
 import { login } from './redux-store/authenticationSlice';
+import CartContext from './store/cart-context';
 
 
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 function App() {
   const dispatch = useDispatch();
   const [verified, setVerified] = useState(false)
   const [loading, setLoading] = useState(true);
 
-const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
+  const cartCtx = useContext(CartContext)
 
-console.log(isLoggedIn)
+  // const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
+  const isLoggedIn = cartCtx.isLoggedIn
 
-useEffect(() => {
- 
-  const token = localStorage.getItem('token');
-  const email = localStorage.getItem('email');
-  if (token && email) {
-   
-    dispatch(login({ token, email }));
-    setVerified(true);
+
+
+  useEffect(() => {
+
+    const token = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
+    if (token && email) {
+
+      dispatch(login({ token, email }));
+      setVerified(true);
+    }
+    setLoading(false);
+  }, [dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
-  setLoading(false);
-}, [dispatch]);
- 
-if (loading) {
-  return <div>Loading...</div>; 
-} 
 
-return (
+  return (
     <>
-   {verified && <NavBar />}
+      {verified && <NavBar />}
 
       <Routes>
         <Route
-        exact
+          exact
           path="/"
-          element={isLoggedIn ? <Home verified={verified} setVerified={setVerified}/> : <Navigate to='/login' />} />
-        <Route
+          element={isLoggedIn ? <Home verified={verified} setVerified={setVerified} /> : <Navigate to='/login' />} />
+
+        {!isLoggedIn && <Route
           path="/login"
-          element={ isLoggedIn ? <Navigate to="/" /> : <AuthForm />} />
- 
+          element={<AuthForm />} />}
+
+
         <Route
           path="/forget-pass"
           element={isLoggedIn ? <Forgetpass /> : <Navigate to='/login' />} />
@@ -63,9 +69,14 @@ return (
         <Route
           path="/expense"
           element={isLoggedIn ? <Expense /> : <Navigate to='/login' />} />
-       </Routes>
 
-       {/* <Layout>
+        <Route
+          path="*"
+          element={<Navigate to='/' />}
+        />
+      </Routes>
+
+    {/* <Layout>
       <Cart />
       <Products />
     </Layout> */}
