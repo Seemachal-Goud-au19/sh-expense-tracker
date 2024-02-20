@@ -12,7 +12,7 @@ const Profile = () => {
         profile_name: '',
         profile_photo: ''
     })
-
+    const [loading, setLoading] = useState(true);
 
   
     const navigate = useNavigate();
@@ -41,6 +41,7 @@ const Profile = () => {
                     profile_name: data?.users[0].displayName,
                     profile_photo: data?.users[0].photoUrl
                 })
+                setLoading(false)
             })
 
         }).catch((err) => {
@@ -98,6 +99,10 @@ let completeNumber = 64
  }
 
     
+ if (loading) {
+    return <div>Loading...</div>;
+  }
+
     return (
         <div className='profile'>
              <div className='profile-message'>

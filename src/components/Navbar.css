@@ -9,10 +9,32 @@
     height: 50px;
 }
 
+.navbar .container {
+    width: 30%;
+    position: absolute;
+    left: 0;
+    justify-content: space-around !important;
+}
 
 .navbar .logout-btn {
     border-radius: 1rem;
     padding: 0.3rem 1.5rem;
     position: absolute;
     right: 25px;
+}
+
+.navbar .profile-icon {
+    font-size: 30px;
+    position: absolute;
+    right: 200px;
+
+}
+
+.navbar a{
+    color: #dc3545;
+    text-decoration: none;
+}
+
+.navbar .active{
+   border-bottom: 2px solid blue;
 }

@@ -130,7 +130,7 @@ const AuthForm = () => {
             required
             ref={passwordInputRef}
           />
-          <span onClick={handleViewPassword}>{icon === 'eye' ? <IoMdEye /> : <IoMdEyeOff />}</span>
+          <span className='eye-icon' onClick={handleViewPassword}>{icon === 'eye' ? <IoMdEye /> : <IoMdEyeOff />}</span>
         </div>
         {!isLogin && <div className='control'>
           <label htmlFor='confirm-password'>Confirm Password</label>

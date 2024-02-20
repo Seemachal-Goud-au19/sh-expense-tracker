@@ -16,25 +16,26 @@ const cartReducer = (state, action) => {
   if (action.type === 'LOGIN') {
     return {
       ...state,
-      userEmail: action.email
+      verified: true
     }
   }
-
-
 
 }
 
 
 export const CartProvider = (props) => {
   const [cartState, dispatch] = useReducer(cartReducer, defaultState);
-  const initialToken = localStorage.getItem('token'); //getting token from localstorage
+  const initialToken = localStorage.getItem('token');
+  const initialVerified = JSON.parse(localStorage.getItem('verified'));
   const [token, setToken] = useState(initialToken);
+  const [verified, setVerified] = useState(initialVerified)
 
   const navigate = useNavigate();
 
 
   //for login
   const userIsLoggedIn = !!token;
+  const userIsverified = verified;
 
   const loginHandler = (token, email) => {
     setToken(token)
@@ -48,7 +49,12 @@ export const CartProvider = (props) => {
     // setUserEmail(null)
     localStorage.removeItem('token')
     localStorage.removeItem('email')
+    localStorage.setItem('verified', false)
     navigate('/login')
+  }
+
+  const verifyHandler = () => {
+    localStorage.setItem('verified', true)
   }
 
 
@@ -59,8 +65,10 @@ export const CartProvider = (props) => {
     //for login
     token: token,
     isLoggedIn: userIsLoggedIn,
+    isVerified: userIsverified,
     login: loginHandler,
-    logout: logoutHandler
+    logout: logoutHandler,
+    verifyHandler: verifyHandler
   }
 
   return (

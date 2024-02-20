@@ -18,7 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 function App() {
   const dispatch = useDispatch();
-  const [verified, setVerified] = useState(false)
+  // const [verified, setVerified] = useState(false)
   const [loading, setLoading] = useState(true);
 
   const cartCtx = useContext(CartContext)
@@ -26,33 +26,15 @@ function App() {
   // const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
   const isLoggedIn = cartCtx.isLoggedIn
 
-
-
-  useEffect(() => {
-
-    const token = localStorage.getItem('token');
-    const email = localStorage.getItem('email');
-    if (token && email) {
-
-      dispatch(login({ token, email }));
-      setVerified(true);
-    }
-    setLoading(false);
-  }, [dispatch]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return (
+ return (
     <>
-      {/* {verified && <NavBar />}
+      {(isLoggedIn) && <NavBar />}
 
       <Routes>
         <Route
           exact
           path="/"
-          element={isLoggedIn ? <Home verified={verified} setVerified={setVerified} /> : <Navigate to='/login' />} />
+          element={isLoggedIn ? <Home /> : <Navigate to='/login' />} />
 
         {!isLoggedIn && <Route
           path="/login"
@@ -74,13 +56,9 @@ function App() {
           path="*"
           element={<Navigate to='/' />}
         />
-      </Routes> */}
+      </Routes>
 
-    <Layout>
-      <Cart />
-      <Products />
-    </Layout>
-
+  
     </>
   );
 }

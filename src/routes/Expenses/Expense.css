@@ -1,5 +1,5 @@
-.dark-theme{
-background-color: blueviolet;
+.dark-theme {
+    background-color: blueviolet;
 }
 
 
@@ -16,46 +16,51 @@ body{
     color:#77D9AB;
 } */
 
-.title{
+.title {
     width: 500px;
-    color:#0869A6;
-    margin:3% auto;
+    color: #0869A6;
+    margin: 3% auto;
 }
 
-.content{
+.content {
     margin-top: 5rem !important;
     width: 580px;
     margin: 0 auto;
-    background-color:#9AD0C2;
-    padding: 3%;
-    padding-left: 6%;
+    background-color: #9AD0C2;
+    padding: 2rem;
+  
 }
 
-.secondTitle{
-    text-align:left;
+.content h3{
+    font-weight: 400;
+}
+
+.secondTitle {
+    text-align: left;
     margin: 2% 0;
     font-weight: 100;
 }
 
-.expense .form{
+.expense .form {
     padding: 5px;
 }
 
-.formLine{
+.formLine {
     display: inline-flex;
     padding: 5px 0px;
 }
 
-.left{
+.left {
     float: left;
 }
 
-.right{
-    float:right;
+.right {
+    float: right;
     margin-right: 100px;
 }
 
-.expense input, select{
+.expense input,
+select {
     width: 130px;
     /* margin-left: 10px; */
 }
@@ -64,16 +69,17 @@ body{
 
 .expense .control {
     margin-bottom: 0.5rem;
-  }
-  
-  .expense .control label {
+}
+
+.expense .control label {
     display: block;
     color: black;
     font-weight: bold;
     margin-bottom: 0.5rem;
-  }
-  
-  .expense .control input,select {
+}
+
+.expense .control input,
+select {
     font: inherit;
     /* background-color: #f1e1fc; */
     /* color: gray; */
@@ -82,29 +88,29 @@ body{
     width: 100%;
     text-align: left;
     padding: 0.25rem;
-  }
+}
 
 /* table style */
-table{
+table {
     width: 100%;
 }
 
-thead{
-    background-color:#042159;
+thead {
+    background-color: #042159;
     line-height: 30px;
 }
 
 
-.outer-btn{
+.outer-btn {
     display: flex;
-    width:30%
+    width: 30%
 }
 
 
-.expense button{
+.expense button {
     width: 80%;
     margin-right: 50%;
-    color:#fff; 
+    color: #fff;
     padding: 10px;
     text-align: center;
     font-size: 1.1em;
@@ -115,10 +121,10 @@ thead{
     cursor: pointer;
 }
 
-.expense .cancel-edit{
+.expense .cancel-edit {
     width: 80%;
     margin-right: 50%;
-    color:#fff; 
+    color: #fff;
     padding: 10px;
     text-align: center;
     font-size: 1.1em;
@@ -129,3 +135,7 @@ thead{
     cursor: pointer;
 }
 
+.disable-edit {
+    pointer-events: none !important;
+    opacity: 0.4 !important;
+}

@@ -12,14 +12,16 @@ const Expense = () => {
     const [editId, setEditId] = useState(null)
     const [editForm, setEditForm] = useState(false);
 
+    const [loading, setLoading] = useState(true);
+
     const [expense, setExpense] = useState({
-        amount: 0,
+        amount: null,
         description: '',
         category: ''
     })
 
     const [editExpense, setEditExpense] = useState({
-        amount: 0,
+        amount: null,
         description: '',
         category: ''
     })
@@ -75,6 +77,10 @@ const Expense = () => {
 
     const submiExpenseHandler = async (e) => {
         e.preventDefault();
+        if (expense.amount < 0) {
+            alert('amount cannot be negative')
+            return
+        }
         try {
             const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses.json`, {
                 method: 'POST',
@@ -98,7 +104,7 @@ const Expense = () => {
 
 
     const fetchExpenses = async () => {
-        console.log("pooOOOOOOOoooOO",modifiedEmail)
+
         try {
             const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses.json`);
 
@@ -119,6 +125,7 @@ const Expense = () => {
             }
 
             dispatch(addExpense(fetchedExpenseList))
+            setLoading(false)
         } catch (error) {
             console.log(error.message)
         }
@@ -142,8 +149,10 @@ const Expense = () => {
     const submitEditExpenseHandler = async (e) => {
         e.preventDefault()
 
-        console.log("Edit expense", expense)
-        console.log("editId", editId, typeof (editId))
+        if (editExpense.amount < 0) {
+            alert('amount cannot be negative')
+            return
+        }
 
         try {
             const response = await fetch(`https://sh-expense-tracker-default-rtdb.firebaseio.com/${modifiedEmail}expenses/${editId}.json`, {
@@ -189,7 +198,9 @@ const Expense = () => {
     }, [expense, updateDeleteState])
 
 
-    console.log(isLoggedIn)
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
 
     return (
@@ -204,7 +215,7 @@ const Expense = () => {
                         <button onClick={() => dispatch(toggleTheme())}>Toggle Theme</button>
 
                         {/* Download CSV button */}
-                        <button onClick={downloadCSV}>Download Expenses as CSV</button>
+                        {expenseList.length > 0 && <button onClick={downloadCSV}>Download Expenses as CSV</button>}
 
                     </div>
                     <div class="form content">
@@ -269,7 +280,7 @@ const Expense = () => {
                 </section>
 
 
-              <section class="content">
+                {expenseList.length > 0 && <section class={editForm ? "content disable-edit" : "content"}>
                     <h3 class="secondTitle">Expense Lists</h3>
                     <table class="table">
                         <thead>
@@ -293,7 +304,8 @@ const Expense = () => {
                             ))}
                         </tbody>
                     </table>
-                </section> 
+                </section>
+                }
             </div>
         </>
 
