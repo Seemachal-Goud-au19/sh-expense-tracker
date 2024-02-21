@@ -14,11 +14,11 @@ import { login } from './redux-store/authenticationSlice';
 import CartContext from './store/cart-context';
 
 
-import { useSelector, useDispatch } from 'react-redux';
 
 function App() {
-  const dispatch = useDispatch();
-  // const [verified, setVerified] = useState(false)
+
+  const initialVerified = JSON.parse(localStorage.getItem('verified'))
+  const [verified, setVerified] = useState(initialVerified)
   const [loading, setLoading] = useState(true);
 
   const cartCtx = useContext(CartContext)
@@ -26,15 +26,17 @@ function App() {
   // const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
   const isLoggedIn = cartCtx.isLoggedIn
 
- return (
+
+
+  return (
     <>
-      {(isLoggedIn) && <NavBar />}
+      {(isLoggedIn) && <NavBar verified={verified} setVerified={setVerified} />}
 
       <Routes>
         <Route
           exact
           path="/"
-          element={isLoggedIn ? <Home /> : <Navigate to='/login' />} />
+          element={isLoggedIn ? <Home verified={verified} setVerified={setVerified} /> : <Navigate to='/login' />} />
 
         {!isLoggedIn && <Route
           path="/login"
@@ -58,7 +60,7 @@ function App() {
         />
       </Routes>
 
-  
+
     </>
   );
 }

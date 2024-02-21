@@ -47,6 +47,7 @@ export const CartProvider = (props) => {
   const logoutHandler = () => {
     setToken(null);
     // setUserEmail(null)
+    setVerified(false)
     localStorage.removeItem('token')
     localStorage.removeItem('email')
     localStorage.setItem('verified', false)
@@ -54,6 +55,7 @@ export const CartProvider = (props) => {
   }
 
   const verifyHandler = () => {
+    setVerified(true)
     localStorage.setItem('verified', true)
   }
 

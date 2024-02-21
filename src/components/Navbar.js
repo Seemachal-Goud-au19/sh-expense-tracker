@@ -13,14 +13,14 @@ import { CgProfile } from "react-icons/cg";
 
 import './Navbar.css'
 
-const NavBar = () => {
+const NavBar = ({ verified, setVerified }) => {
     const cartCtx = useContext(CartContext)
     // const isLoggedIn = useSelector((state)=>state.authentication.isLoggedIn)
     const isLoggedIn = cartCtx.isLoggedIn
     const userEmail = localStorage.getItem('email') || ''
 
     const { pathname } = useLocation();
-    
+
     return (
         <Navbar expand="lg" className="navbar">
             <Container>
@@ -32,7 +32,10 @@ const NavBar = () => {
                 overlay={<Tooltip id="button-tooltip-2">{userEmail}</Tooltip>}>
                 <span className="profile-icon"><CgProfile /></span>
             </OverlayTrigger>
-            <Button className='logout-btn' variant="outline-danger" onClick={() => { cartCtx.logout(null) }}>Logout</Button>
+            <Button className='logout-btn' variant="outline-danger" onClick={() => {
+                // setVerified(false)
+                cartCtx.logout()
+            }}>Logout</Button>
         </Navbar>
     );
 }
