@@ -6,11 +6,6 @@ import Profile from './routes/Profile/Profile';
 import NavBar from './components/Navbar';
 import Forgetpass from './routes/Auth/Forgetpass';
 import Expense from './routes/Expenses/Expense';
-import Layout from './components/shoppingComponents/Layout/Layout';
-import Cart from './components/shoppingComponents/Cart/Cart';
-import Products from './components/shoppingComponents/Shop/Products';
-import Expense2 from './routes/Expenses/Expense2';
-import { login } from './redux-store/authenticationSlice';
 import CartContext from './store/cart-context';
 
 
